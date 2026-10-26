@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://economia.awesomeapi.com.br https://api.frankfurter.dev https://api.bcb.gov.br https://olinda.bcb.gov.br https://brapi.dev https://api.travelpayouts.com https://serpapi.com https://ignav.com https://api.open-meteo.com https://archive-api.open-meteo.com https://date.nager.at https://ec.europa.eu https://www.ine.pt">
+<title>Planejador Viseu</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div class="brand">
+      <svg class="tile" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="7" fill="var(--azulejo)"/>
+        <path d="M20 5 L24 16 L35 20 L24 24 L20 35 L16 24 L5 20 L16 16 Z" fill="none" stroke="#fff" stroke-width="2"/>
+        <circle cx="20" cy="20" r="3.2" fill="#fff"/>
+        <path d="M5 5 Q12 5 12 12 M35 5 Q28 5 28 12 M5 35 Q12 35 12 28 M35 35 Q28 35 28 28" fill="none" stroke="#fff" stroke-width="1.6" opacity=".7"/>
+      </svg>
+      <div>
+        <strong>Planejador</strong>
+        <span id="brandSub">Brasil → Viseu</span>
+      </div>
+    </div>
+    <nav id="nav">
+      <p class="nav-group">Visão geral</p>
+      <button data-view="painel" class="active"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3zm10 8h8V11h-8zM3 21h8v-6H3zm10-18v6h8V3z"/></svg>Painel</button>
+      <button data-view="plano"><svg viewBox="0 0 24 24"><path d="M3 12h18M7 8v8M12 5v14M17 9v6"/></svg>Linha do tempo</button>
+      <p class="nav-group">Dinheiro</p>
+      <button data-view="rendas"><svg viewBox="0 0 24 24"><path d="M12 3v18M7 8l5-5 5 5M5 21h14"/></svg>Rendas</button>
+      <button data-view="investimentos"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Investimentos</button>
+      <button data-view="despesas"><svg viewBox="0 0 24 24"><path d="M12 21V3M7 16l5 5 5-5M5 3h14"/></svg>Despesas</button>
+      <button data-view="impostos"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg>Impostos</button>
+      <p class="nav-group">Mudança</p>
+      <button data-view="familia"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20c.6-3.6 2.8-5.5 5.5-5.5s4.9 1.9 5.5 5.5M13.5 16.2c.9-1.2 2-1.8 3.5-1.8 2.3 0 3.9 1.6 4.4 4.6"/></svg>Família</button>
+      <button data-view="cidades"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Cidades</button>
+      <button data-view="mudanca"><svg viewBox="0 0 24 24"><path d="M2 16l20-6-3-2-6 2-6-5-2 1 4 6-5 2-2-1-1 1z M3 21h18"/></svg>Custos da mudança</button>
+      <button data-view="vistos"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M8.5 17h7"/></svg>Vistos</button>
+      <button data-view="viagem"><svg viewBox="0 0 24 24"><path d="M10.5 4.5 13 11l6.5-1.5a1.6 1.6 0 0 1 .7 3.1L13 14.5 10.5 21H8.5l1-6.5-4.5 1-1.5 2H2l1-4-1-4h1.5l1.5 2 4.5 1-1-6.5z"/></svg>Viagem</button>
+      <button data-view="vagas"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>Vagas</button>
+      <button data-view="checklist"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Checklist</button>
+      <p class="nav-group">Depois de chegar</p>
+      <button data-view="acompanhamento"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Acompanhamento</button>
+      <p class="nav-group">Ferramentas</p>
+      <button data-view="mercado"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 2 5-6"/></svg>Mercado</button>
+      <button data-view="cenarios"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Cenários</button>
+      <button data-view="vasco"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg>Vasco</button>
+      <button data-view="sistema"><svg viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.7-8.95A6 6 0 0 1 17.8 8.1 4 4 0 0 1 17.5 16H16"/><path d="M12 12v9M9 18l3 3 3-3"/></svg>Sistema</button>
+      <button data-view="dados"><svg viewBox="0 0 24 24"><path d="M4 7c0-2 16-2 16 0v10c0 2-16 2-16 0zM4 7c0 2 16 2 16 0M4 12c0 2 16 2 16 0"/></svg>Dados</button>
+    </nav>
+    <div class="rail-foot">
+      <button id="themeBtn" class="ghost small" title="Alternar tema">
+        <svg viewBox="0 0 24 24"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg><span>Tema escuro</span>
+      </button>
+      <p class="saved" id="saved">Salvo neste computador</p>
+      <p class="saved sync-st" id="syncStatus"></p>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <h1 id="viewTitle">Painel</h1>
+        <p id="viewSub" class="sub"></p>
+      </div>
+      <div class="top-tools">
+        <label class="city-pick" title="Cidade"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><select id="citySel" aria-label="Cidade"></select></label>
+        <div class="fx" id="fxChip" title="Câmbio do cenário ativo"></div>
+        <div class="seg" id="scenarioSeg" role="tablist" aria-label="Cenário"></div>
+      </div>
+    </header>
+    <div class="banner" id="alertBanner" hidden></div>
+
+    <!-- PAINEL -->
+    <section class="view active" id="view-painel">
+      <div class="hero">
+        <div class="hero-text">
+          <p class="hero-lead" id="heroLead"></p>
+          <p class="hero-num" id="heroNum"></p>
+          <p class="hero-foot" id="heroFoot"></p>
+        </div>
+        <div class="hero-chart">
+          <div class="chart-head"><h3 id="wfTitle">Do Brasil até Viseu, por mês</h3><span class="muted" id="wfNote"></span></div>
+          <div class="cbox tall"><canvas id="chWaterfall"></canvas></div>
+        </div>
+      </div>
+      <div class="strip" id="kpis"></div>
+      <div class="grid3">
+        <div class="panel">
+          <div class="chart-head"><h3>Para onde vão as despesas</h3></div>
+          <div class="cbox"><canvas id="chDonut"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Sobra mensal por cenário</h3></div>
+          <div class="cbox"><canvas id="chScen"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Patrimônio até a mudança e depois</h3></div>
+          <div class="cbox"><canvas id="chProj"></canvas></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Visto D7: meios de subsistência</h3><span class="muted" id="d7Ref"></span></div>
+          <div id="meters"></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Pontos que mudam o resultado</h3></div>
+          <ul class="levers" id="levers"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINHA DO TEMPO -->
+    <section class="view" id="view-plano">
+      <div class="grid-plano">
+        <div class="panel">
+          <div class="chart-head"><h3>Antes da mudança</h3><span class="muted" id="countdown"></span></div>
+          <div class="form" id="planoForm"></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Patrimônio mês a mês</h3><span class="muted small">em euros, nos três cenários</span></div>
+          <div class="cbox"><canvas id="chTimeline"></canvas></div>
+        </div>
+      </div>
+      <div class="strip strip5" id="planoKpis"></div>
+      <div class="panel">
+        <div class="chart-head"><h3>Saldo de cada mês depois da mudança</h3><span class="muted small" id="saldoNote"></span></div>
+        <div class="cbox"><canvas id="chSaldo"></canvas></div>
+      </div>
+      <div class="toolbar spaced">
+        <div class="total">Eventos que entram na linha do tempo</div>
+        <button class="primary" data-add="eventos">Adicionar evento</button>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblEventos"></table></div>
+      <p class="hint">“A partir do mês” conta a partir da mudança: 0 é o mês da chegada, 6 é seis meses depois, −2 é dois meses antes. 13º, férias e o IRS anual entram sozinhos.</p>
+      <details class="panel fold">
+        <summary><h3>Mês a mês em detalhe</h3></summary>
+        <div class="table-wrap flat"><table class="grid compact" id="tblMeses"></table></div>
+      </details>
+    </section>
+
+    <!-- RENDAS -->
+    <section class="view" id="view-rendas">
+      <div class="toolbar">
+        <div class="total" id="rendasTotal"></div>
+        <button class="primary" data-add="rendas">Adicionar renda</button>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblRendas"></table></div>
+      <p class="hint">Informe o valor bruto. O IR do Brasil é o que fica retido aqui; o imposto de Portugal é calculado na aba Impostos. “Começa” e “termina” contam meses a partir da mudança. Um emprego em Portugal pode substituir um salário do Brasil a partir do mês em que começa.</p>
+    </section>
+
+    <!-- INVESTIMENTOS -->
+    <section class="view" id="view-investimentos">
+      <div class="toolbar">
+        <div class="total" id="invTotal"></div>
+        <button class="primary" data-add="investimentos">Adicionar investimento</button>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblInv"></table></div>
+      <label class="check"><input type="checkbox" id="custosDosInvest"> Pagar os custos da mudança com os investimentos (o capital cai na mesma proporção)</label>
+      <p class="hint">IR no Brasil como não residente: renda fixa costuma reter 15%, FII é isento. “IR enquanto no Brasil” vale para o crescimento antes da mudança. Em Portugal o imposto é calculado na aba Impostos.</p>
+    </section>
+
+    <!-- DESPESAS -->
+    <section class="view" id="view-despesas">
+      <div class="split">
+        <div>
+          <div class="toolbar">
+            <div class="total" id="despTotal"></div>
+            <button class="primary" data-add="despesas">Adicionar despesa</button>
+          </div>
+          <div class="table-wrap"><table class="grid" id="tblDesp"></table></div>
+          <p class="hint">Linhas com origem “Cidade” ou “Família” se ajustam sozinhas à cidade escolhida e ao tamanho da família. Escolha “Valor manual” para digitar o seu.</p>
+        </div>
+        <div class="panel side">
+          <div class="chart-head"><h3>Por categoria</h3></div>
+          <div class="cbox"><canvas id="chCat"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPOSTOS -->
+    <section class="view" id="view-impostos">
+      <div class="toolbar">
+        <div class="total" id="impHead"></div>
+        <div class="btn-row tight">
+          <label class="inline-sel">Regime <select id="impRegime"><option value="melhor">O mais barato</option><option value="autonomo">Taxas autónomas</option><option value="englobamento">Englobamento</option></select></label>
+          <label class="inline-sel">Declaração <select id="impTrib"><option value="melhor">A mais barata</option><option value="separada">Separada</option><option value="conjunta">Conjunta</option></select></label>
+        </div>
+      </div>
+      <div class="strip strip4" id="impKpis"></div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Opções comparadas</h3><span class="muted small">IRS em Portugal por ano, depois do crédito do Brasil</span></div>
+          <div class="table-wrap flat"><table class="grid compact" id="tblImpOpcoes"></table></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Por tipo de rendimento</h3><span class="muted small" id="impEscolhida"></span></div>
+          <div class="table-wrap flat"><table class="grid compact" id="tblImpCat"></table></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Por pessoa</h3></div>
+        <div class="table-wrap flat"><table class="grid compact" id="tblImpPessoa"></table></div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Escalões do IRS usados</h3><span class="muted small" id="impAno"></span></div>
+          <div class="table-wrap flat"><table class="grid compact" id="tblEscaloes"></table></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Como o imposto é estimado</h3></div>
+          <ul class="explain">
+            <li>Morando em Portugal, vocês viram residentes fiscais lá e declaram também o que vem do Brasil.</li>
+            <li>Taxas autónomas: aluguel do Brasil a 25% e juros e fundos a 28%, separados do salário.</li>
+            <li>Englobamento: tudo soma ao salário e paga pelos escalões. Costuma compensar com renda baixa.</li>
+            <li>O IR pago no Brasil abate o português, rendimento a rendimento, até o valor que Portugal cobraria.</li>
+            <li>Trabalho: dedução específica de 8,54 × IAS, mínimo de existência e IRS Jovem quando informado na aba Família.</li>
+            <li>Deduções à coleta: € 250 por adulto e € 600 por dependente, mais os extras de crianças pequenas.</li>
+          </ul>
+          <p class="muted small">É uma estimativa para conversar com o contador. Saúde, educação e outras deduções podem baixar o valor.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAMÍLIA -->
+    <section class="view" id="view-familia">
+      <div class="split">
+        <div>
+          <div class="toolbar">
+            <div class="total" id="famHead"></div>
+            <div class="btn-row tight">
+              <button data-addpessoa="adulto">Adicionar adulto</button>
+              <button class="primary" data-addpessoa="crianca">Adicionar criança</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table class="grid" id="tblFamilia"></table></div>
+          <div class="panel">
+            <div class="chart-head"><h3>Casa e declaração</h3></div>
+            <div class="form" id="famForm"></div>
+          </div>
+        </div>
+        <div class="panel side">
+          <div class="chart-head"><h3>O que muda com a família</h3></div>
+          <div id="famResumo"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CIDADES -->
+    <section class="view" id="view-cidades">
+      <div class="toolbar">
+        <div class="total" id="cidHead"></div>
+        <div class="btn-row tight">
+          <button class="ghost" id="cidRestore">Restaurar valores originais</button>
+          <button class="primary" id="cidAdd">Adicionar cidade</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Sobra mensal da sua família em cada cidade</h3><span class="muted small" id="cidNote"></span></div>
+        <div class="cbox tall"><canvas id="chCidades"></canvas></div>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblCidades"></table></div>
+      <div class="panel ine">
+        <div class="chart-head"><h3>Aluguéis oficiais do INE</h3><span class="muted small" id="ineNota"></span></div>
+        <p class="muted small">Renda mediana por m² dos novos contratos de arrendamento em cada concelho. A renda mensal é estimada com 55 m² para T1, 80 m² para T2 e 105 m² para T3.</p>
+        <p class="ine-aviso small" id="ineAviso" hidden>Esses dados são de mais de um ano atrás. O INE voltou a publicar a série trimestral em 2026; peça ao Vasco os valores mais recentes.</p>
+        <div class="table-wrap flat"><table class="grid compact" id="tblINE"></table></div>
+        <div class="btn-row"><button id="ineBuscar">Buscar no INE</button><button class="primary" id="ineUsar" disabled>Usar estes aluguéis</button><button id="ineVasco">Pedir ao Vasco os números mais recentes</button></div>
+      </div>
+      <p class="hint">Aluguéis sem mobília, de anúncios e estatísticas de 2026; cidades marcadas como estimativa vêm do preço por m² do distrito. Edite qualquer valor com o que encontrar no Idealista ou Imovirtual. O índice de mercado multiplica o gasto com supermercado.</p>
+    </section>
+
+    <!-- CUSTOS DA MUDANÇA -->
+    <section class="view" id="view-mudanca">
+      <div class="toolbar">
+        <div class="total" id="entTotal"></div>
+        <button class="primary" data-add="entrada">Adicionar custo</button>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblEnt"></table></div>
+      <div class="panel">
+        <div class="chart-head"><h3>Custo da mudança em cada cenário</h3></div>
+        <div class="cbox short"><canvas id="chEnt"></canvas></div>
+      </div>
+    </section>
+
+    <!-- VISTOS -->
+    <section class="view" id="view-vistos">
+      <div class="toolbar">
+        <div class="total" id="vsHead"></div>
+        <div class="btn-row tight" id="vsAcoes" hidden>
+          <button id="vsDocsBtn">Pôr os documentos no checklist</button>
+          <button class="primary" id="vsCustoBtn">Usar o custo do visto no plano</button>
+        </div>
+      </div>
+      <div class="visa-grid" id="vsCards"></div>
+      <div class="panel asc-panel">
+        <div class="chart-head"><h3>Árvore até o antepassado português</h3><span class="muted small">Lei da Nacionalidade com a Lei Orgânica 1/2026, em vigor desde 19/05/2026</span></div>
+        <div class="asc-top"><label class="inline-sel">A árvore é de <span id="ascTitular"></span></label>
+          <div class="btn-row tight"><button id="ascAdd">Adicionar geração</button><button id="ascDocs">Pôr as certidões no checklist</button><button class="primary" id="ascVasco">Pedir ajuda ao Vasco</button></div></div>
+        <div class="table-wrap flat"><table class="grid compact" id="tblAsc"></table></div>
+        <div class="asc-grid">
+          <div id="ascResultado"></div>
+          <div><p class="muted small asc-lt">Onde procurar o registo</p><ul class="asc-links" id="ascLinks"></ul></div>
+        </div>
+        <p class="hint">Filhos e netos de portugueses de origem têm atribuição direta da nacionalidade. Bisnetos podem ser naturalizados depois de 5 anos de residência legal, a critério do Governo, ou pela cadeia: um parente vivo mais perto do português pede primeiro e a nacionalidade desce, geração por geração. Confirme a estratégia com um advogado de nacionalidade.</p>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Ascendência das outras pessoas</h3><span class="muted small">para quem não está na árvore</span></div>
+          <div class="mk-rows" id="vsAsc"></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Do visto à nacionalidade</h3><span class="muted small">prazos da lei em vigor</span></div>
+          <ol class="milestones" id="vsTimeline"></ol>
+        </div>
+      </div>
+      <p class="hint">Os requisitos mudam. Antes de pedir, confirme no site do consulado (VFS Global) e na AIMA. A avaliação acima usa os números do cenário ativo.</p>
+    </section>
+
+    <!-- VIAGEM -->
+    <section class="view" id="view-viagem">
+      <div class="toolbar">
+        <div class="total" id="vgHead"></div>
+        <div class="btn-row tight">
+          <span class="muted small" id="vgStatus"></span>
+          <button class="primary" id="vgBuscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Buscar preços</button>
+        </div>
+      </div>
+      <div class="grid-viagem">
+        <div class="panel">
+          <div class="chart-head"><h3>Rota e data</h3></div>
+          <div class="form" id="vgForm"></div>
+          <p class="muted small vg-links-t">Buscar também em</p>
+          <div class="links-chips" id="vgLinks"></div>
+        </div>
+        <div>
+          <div class="strip strip4" id="vgKpis"></div>
+          <div class="btn-row"><button id="vgUsar" disabled>Usar no plano</button></div>
+        </div>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblVoos"></table></div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Preço por dia no mês da viagem</h3><span class="muted small" id="vgCalNote"></span></div>
+          <div class="cbox short"><canvas id="chVgCal"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Como o preço andou</h3><span class="muted small" id="vgHistNote"></span></div>
+          <div class="cbox short"><canvas id="chVgHist"></canvas></div>
+        </div>
+      </div>
+      <div class="grid3">
+        <div class="panel">
+          <div class="chart-head"><h3>Bagagem</h3></div>
+          <div class="form" id="vgBag"></div>
+          <p class="total vg-tot" id="vgBagTot"></p>
+          <div class="btn-row"><button id="vgBagBtn">Usar no plano</button></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Do aeroporto até a cidade</h3></div>
+          <div id="vgTransfer"></div>
+          <div class="btn-row"><button id="vgTransferBtn">Usar no plano</button></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Clima na chegada</h3></div>
+          <div id="vgClima"></div>
+          <div class="cbox mini"><canvas id="chVgClima"></canvas></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Feriados perto da viagem</h3></div>
+          <div id="vgFeriados"></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Fuso horário</h3></div>
+          <p id="vgFuso"></p>
+          <div class="btn-row"><button id="vgTarefas">Pôr as tarefas da viagem no checklist</button></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Fontes de preços</h3><span class="muted small">opcionais; os links acima funcionam sem cadastro</span></div>
+        <div id="vgKeys"></div>
+        <p class="hint">As chaves ficam só neste computador e não vão para os arquivos exportados nem para o backup.</p>
+      </div>
+    </section>
+
+    <!-- VAGAS -->
+    <section class="view" id="view-vagas">
+      <div class="toolbar">
+        <div class="total" id="vgsHead"></div>
+        <button class="primary" id="vgsAdd">Adicionar vaga</button>
+      </div>
+      <div class="grid-vagas">
+        <div class="panel">
+          <div class="chart-head"><h3>Analisar uma vaga com o Vasco</h3></div>
+          <textarea id="vgsTexto" rows="5" placeholder="Cole aqui o texto do anúncio ou o link da vaga (LinkedIn, Net-Empregos, ITJobs, site da empresa)"></textarea>
+          <div class="btn-row"><button class="primary" id="vgsAnalisar">Analisar e registrar</button></div>
+          <p class="hint">O Vasco extrai salário, cidade e modalidade, registra a vaga abaixo e diz quanto sobra com ela e que visto ela abre.</p>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Sobra com cada vaga</h3><span class="muted small" id="vgsChartNote"></span></div>
+          <div class="cbox short"><canvas id="chVagas"></canvas></div>
+        </div>
+      </div>
+      <div class="table-wrap"><table class="grid" id="tblVagas"></table></div>
+      <div class="panel" id="vgsDet" hidden>
+        <div class="chart-head"><h3 id="vgsDetTit"></h3><button class="primary" id="vgsUsar">Usar no plano</button></div>
+        <div class="grid2 flat">
+          <div id="vgsDetBody"></div>
+          <div class="table-wrap flat"><table class="grid compact" id="vgsCidades"></table></div>
+        </div>
+      </div>
+      <p class="hint">Na simulação, a vaga entra como trabalho em Portugal (14 pagamentos, Segurança Social de 11% e IRS calculado) no lugar do trabalho remoto da pessoa. O plano real só muda quando você clica em Usar no plano.</p>
+    </section>
+
+    <!-- VASCO -->
+    <section class="view" id="view-vasco">
+      <div class="toolbar">
+        <div class="total" id="vzStatus"></div>
+        <button class="primary" id="vzAbrir">Conversar com o Vasco</button>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Resumo</h3><span class="muted small" id="vzResumoQuando"></span></div>
+          <div id="vzResumo"></div>
+          <div class="btn-row">
+            <button id="vzResumoBtn">Gerar resumo agora</button>
+            <label class="inline-sel">Ao abrir o app <select id="vzFreq"><option value="semanal">toda semana</option><option value="diario">todo dia</option><option value="desligado">não gerar</option></select></label>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Documentos</h3></div>
+          <div class="vz-drop" id="vzDrop">
+            <p><b>Arraste um documento aqui</b> para o Vasco ler e comparar com o plano</p>
+            <p class="muted small">Holerite, extrato, contrato de aluguel, e-mail do consulado, carta da universidade. PDF, imagem, CSV ou texto.</p>
+            <button id="vzDocBtn">Escolher arquivo</button><input type="file" id="vzDocArquivo" hidden multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.csv,.txt,.md,.json,.ofx,image/*,application/pdf,text/*">
+          </div>
+          <ul class="vz-docs" id="vzDocs"></ul>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Regras vigiadas</h3><span class="muted small" id="vzRegrasQuando"></span></div>
+        <div class="table-wrap flat"><table class="grid compact" id="tblRegras"></table></div>
+        <div class="btn-row">
+          <button class="primary" id="vzRegrasBtn">Verificar agora</button>
+          <label class="check small-check"><input type="checkbox" id="vzRegrasAuto"> Verificar sozinho uma vez por mês</label>
+        </div>
+        <p class="hint">O Vasco pesquisa cada regra em fontes oficiais e jornais. Quando um valor muda, você decide se usa no app; regras que dependem do código do app ficam marcadas para a próxima atualização.</p>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Diário de decisões</h3><span class="muted small">entra no relatório em PDF</span></div>
+        <div class="table-wrap flat"><table class="grid compact" id="tblDecisoes"></table></div>
+        <div class="vz-decidir"><input type="text" id="vzDecisao" placeholder="Ex.: Decidimos ir pelo D7 e comprar euros todo mês"><button id="vzDecidir">Registrar decisão</button></div>
+      </div>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section class="view" id="view-checklist">
+      <div class="toolbar">
+        <div class="total" id="chkHead"></div>
+        <div class="btn-row tight"><button id="chkIcs" title="Cada tarefa vira um lembrete no dia 1º do mês, com aviso uma semana antes">Exportar para a agenda</button><button class="primary" data-add="tarefas">Adicionar tarefa</button></div>
+      </div>
+      <div class="bar big"><i id="chkBar"></i></div>
+      <div id="chkList"></div>
+    </section>
+
+    <!-- ACOMPANHAMENTO -->
+    <section class="view" id="view-acompanhamento">
+      <div class="toolbar">
+        <div class="btn-row tight">
+          <label class="inline-sel">Mês <input type="month" id="acMes"></label>
+        </div>
+        <div class="btn-row tight">
+          <label class="button">Importar extrato .csv<input type="file" id="acCsv" accept=".csv,text/csv" hidden></label>
+          <button class="ghost" id="acLimpar">Limpar este mês</button>
+          <button id="acVasco">Analisar com o Vasco</button>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Planejado x realizado</h3><span class="muted small" id="acNote"></span></div>
+          <div class="table-wrap flat"><table class="grid compact" id="tblAc"></table></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Por categoria</h3></div>
+          <div class="cbox tall"><canvas id="chAc"></canvas></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Meses registrados</h3></div>
+        <div class="table-wrap flat"><table class="grid compact" id="tblAcHist"></table></div>
+      </div>
+      <p class="hint">O extrato pode vir de qualquer banco: o app procura colunas de data, descrição e valor (ou débito e crédito). Saídas são classificadas por palavras como Continente, EDP, MEO ou renda; o que não reconhecer vai para Outros e você corrige na tabela.</p>
+    </section>
+
+    <!-- MERCADO -->
+    <section class="view" id="view-mercado">
+      <div class="toolbar">
+        <div class="total" id="mkStatus">Ainda sem dados de mercado.</div>
+        <div class="btn-row tight">
+          <label class="check small-check"><input type="checkbox" id="mkAuto"> Atualizar ao abrir o app</label>
+          <button class="primary" id="mkRefresh"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>Atualizar agora</button>
+        </div>
+      </div>
+      <div class="mk-hero">
+        <div class="mk-rate">
+          <p class="mk-label">Euro agora</p>
+          <p class="mk-big" id="mkEur">—</p>
+          <p class="mk-chg" id="mkEurChg"></p>
+          <dl class="mk-facts" id="mkEurFacts"></dl>
+          <div class="mk-alert">
+            <label for="mkAlvo">Avisar quando o euro ficar abaixo de</label>
+            <div class="mk-alert-row"><span>R$</span><input type="number" id="mkAlvo" step="0.01" min="0" placeholder="5,80"></div>
+          </div>
+          <div class="btn-row">
+            <button id="mkApplyBase">Usar no cenário Base</button>
+            <button class="ghost" id="mkApplyAll" title="Base = hoje; Conservador = +6%; Estresse = +14%">Usar nos três cenários</button>
+          </div>
+        </div>
+        <div class="mk-chart">
+          <div class="chart-head"><h3>Euro nos últimos 30 dias</h3><span class="muted" id="mkEurRange"></span></div>
+          <div class="cbox"><canvas id="chEurHist"></canvas></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Juros e inflação no Brasil</h3><span class="muted small">Banco Central (SGS)</span></div>
+          <div class="mk-rows" id="mkJuros"></div>
+          <div class="btn-row">
+            <button id="mkApplyCdi" title="Base = CDI de hoje; Conservador = Selic esperada no fim do próximo ano; Estresse = fim do ano seguinte">Usar CDI e Focus nos cenários</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>O que o mercado espera (Focus)</h3><span class="muted small" id="mkFocusDate"></span></div>
+          <div class="cbox short"><canvas id="chFocus"></canvas></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Euros que vocês já compraram</h3><span class="muted small" id="cpResumo"></span></div>
+        <div class="table-wrap flat"><table class="grid compact" id="tblCompras"></table></div>
+        <div class="btn-row"><button id="cpAdd">Registrar compra de euros</button></div>
+        <p class="hint">Esses euros entram na reserva e pagam primeiro os custos da mudança em euros, sem nova remessa.</p>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Plano de compra de euros até a mudança</h3><label class="inline-sel small">Meta em € <input type="number" id="peMeta" step="500" min="0"></label></div>
+        <div class="strip strip4 flat" id="peKpis"></div>
+        <div class="bar big"><i id="peBar"></i></div>
+        <p class="hint" id="peNota"></p>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Cotações de FIIs e ações</h3><span class="muted small">brapi.dev</span></div>
+        <div class="mk-tickers">
+          <div class="mk-add">
+            <input type="text" id="mkTicker" placeholder="Ex.: MXRF11" maxlength="8" aria-label="Código do ativo">
+            <button id="mkAddTicker">Adicionar ativo</button>
+          </div>
+          <div class="mk-token">
+            <label for="mkToken">Token da brapi</label>
+            <input type="password" id="mkToken" placeholder="Cole o token gratuito" autocomplete="off">
+            <a href="https://brapi.dev/dashboard" target="_blank">Criar token</a>
+          </div>
+        </div>
+        <div class="table-wrap"><table class="grid" id="tblTickers"></table></div>
+        <p class="hint">As cotações de bolsa precisam de um token gratuito da brapi.dev. Euro, juros e Focus funcionam sem cadastro.</p>
+      </div>
+    </section>
+
+    <!-- CENÁRIOS -->
+    <section class="view" id="view-cenarios">
+      <div class="table-wrap"><table class="grid params" id="tblScen"></table></div>
+      <div class="panel risco">
+        <div class="chart-head"><h3>Risco do câmbio: mil caminhos possíveis do euro</h3>
+          <div class="btn-row tight"><label class="inline-sel small">Oscilação % ao ano <input type="number" id="rkVol" step="1" min="3" max="40"></label><label class="inline-sel small">Tendência % ao ano <input type="number" id="rkTend" step="0.5" min="-10" max="15"></label><button class="ghost" id="rkDeNovo">Sortear de novo</button></div></div>
+        <div class="strip strip4 flat" id="rkKpis"></div>
+        <div class="cbox tall"><canvas id="chRisco"></canvas></div>
+        <p class="hint" id="rkNota"></p>
+        <p class="hint">Cada linha mostra o dinheiro total (conta em euros mais investimentos convertidos) mês a mês. Os três cenários acima são fotos fixas; aqui o euro sobe e desce como na vida real, e a conta diz em quantos caminhos o dinheiro aguenta.</p>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Metas e referências</h3></div>
+          <div class="form" id="metasForm"></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Como as contas são feitas</h3></div>
+          <ul class="explain">
+            <li>Renda em reais, menos o IR do Brasil, passa pela remessa: ÷ (câmbio × (1 + IOF)) × (1 − tarifa).</li>
+            <li>O IRS português é calculado por ano e distribuído pelos meses; na linha do tempo, a parte dos rendimentos do Brasil é paga em agosto do ano seguinte.</li>
+            <li>Despesas em reais são pagas no Brasil e convertidas só pelo câmbio, sem IOF.</li>
+            <li>Custos da mudança em euros incluem IOF e tarifa, a menos que já existam euros comprados.</li>
+            <li>Aluguel adiantado = meses do cenário × despesas de moradia.</li>
+            <li>Quando um mês fecha no vermelho, sai primeiro da conta em euros e depois dos investimentos.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SISTEMA -->
+    <section class="view" id="view-sistema">
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Google Drive</h3><span class="muted small">para usar o plano a dois</span></div>
+          <p class="total" id="syEstado"></p>
+          <div id="sySugestoes"></div>
+          <div class="btn-row"><button id="syEscolher">Escolher a pasta</button><button class="primary" id="syAgora">Sincronizar agora</button><button class="ghost" id="syDesligar">Desligar</button></div>
+          <div class="form sy-form">
+            <label>Seu nome neste computador<small>aparece para a outra pessoa quando você muda o plano</small></label><input type="text" id="syNome" maxlength="40">
+            <label>Resumo para o celular<small>um PDF na pasta do Drive, atualizado a cada mudança (no máximo a cada 30 min)</small></label><span class="sy-pdf"><label class="check small-check"><input type="checkbox" id="syPdf"> automático</label><button class="ghost small-btn" id="syPdfAgora">Gerar agora</button></span>
+          </div>
+          <p class="muted small" id="syUltima"></p>
+          <details class="sy-ajuda"><summary>Como ligar o computador da outra pessoa</summary>
+            <ol>
+              <li>No Google Drive, crie a pasta <b>Planejador Viseu</b> (o app cria sozinho na primeira sincronização) e compartilhe com a conta Google da outra pessoa, como editora.</li>
+              <li>No Drive da outra pessoa, abra <b>Compartilhados comigo</b>, clique com o botão direito na pasta e escolha <b>Organizar › Adicionar atalho</b> em Meu Drive. Assim o Google Drive para computador sincroniza a pasta.</li>
+              <li>No app da outra pessoa, nesta aba, clique em <b>Escolher a pasta</b> e selecione a pasta Planejador Viseu dentro do Meu Drive. Na primeira vez, o app pergunta se deve usar o plano que já está lá: responda que sim.</li>
+            </ol>
+            <p class="muted small">Cada um edita no seu computador; as mudanças se juntam por item. Se os dois mudarem o mesmo campo, fica a mudança mais recente. As chaves de API e as conversas com o Vasco não vão para o Drive.</p>
+          </details>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Atualizações</h3></div>
+          <p class="total" id="upEstado"></p>
+          <p class="muted" id="upDetalhe"></p>
+          <div class="btn-row"><button class="primary" id="upAplicar" hidden>Atualizar agora</button></div>
+          <div class="up-pub">
+            <p class="muted small">Quando você instalar uma versão nova num computador, publique aqui. O outro computador recebe ao abrir o app, sem trocar a pasta à mão.</p>
+            <input type="text" id="upNotas" placeholder="O que mudou (opcional)" maxlength="300">
+            <div class="btn-row"><button id="upPublicar">Publicar esta versão no Drive</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Avisos do Windows</h3></div>
+        <div class="bg-grid">
+          <div>
+            <label class="check"><input type="checkbox" id="bgLigado"> Ao fechar a janela, continuar rodando perto do relógio e avisar</label>
+            <label class="check"><input type="checkbox" id="bgWindows"> Abrir junto com o Windows, escondido</label>
+            <div class="btn-row"><button class="ghost" id="bgTestar">Mandar um aviso de teste</button></div>
+            <p class="muted small">Verifica a cada 3 horas. Para fechar de vez, use Sair no ícone perto do relógio.</p>
+          </div>
+          <div id="avisosBox">
+            <p class="muted small">Avisar quando:</p>
+            <label class="check"><input type="checkbox" id="av-euro"> o euro ficar abaixo do alvo da aba Mercado</label>
+            <label class="check"><input type="checkbox" id="av-passagem"> a passagem ficar abaixo do alvo da aba Viagem</label>
+            <label class="check"><input type="checkbox" id="av-prazos"> houver tarefas do checklist no mês</label>
+            <label class="check"><input type="checkbox" id="av-sync"> a outra pessoa mudar o plano</label>
+            <label class="check"><input type="checkbox" id="av-regras"> o Vasco achar uma regra que mudou</label>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Diagnóstico</h3><span class="muted small" id="diagResumo"></span></div>
+        <p class="muted small">Testa cada fonte de dados, as chaves e a pasta do Drive neste computador.</p>
+        <div class="table-wrap flat"><table class="grid compact" id="tblDiag"></table></div>
+        <div class="btn-row"><button class="primary" id="diagRodar">Testar tudo</button><label class="check small-check"><input type="checkbox" id="diagPagas"> incluir SerpApi e Ignav (gasta 1 busca de cada)</label><button class="ghost" id="diagCopiar">Copiar resultado</button></div>
+      </div>
+    </section>
+
+    <!-- DADOS -->
+    <section class="view" id="view-dados">
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Relatório</h3></div>
+          <p class="muted">Um PDF com os números dos três cenários, família, cidade, custos, impostos, linha do tempo e pendências do checklist. Bom para levar ao contador ou ao advogado.</p>
+          <div class="btn-row"><button class="primary" id="btnPdf">Gerar relatório PDF</button></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Backup automático</h3><span class="muted small" id="bkInfo"></span></div>
+          <p class="muted">Escolha uma pasta, de preferência dentro do OneDrive ou do Google Drive, para ter uma cópia na nuvem. O app grava uma cópia a cada alteração e guarda uma por dia dos últimos 30 dias.</p>
+          <div class="btn-row">
+            <button id="bkPasta">Escolher pasta</button>
+            <label class="check"><input type="checkbox" id="bkAuto"> Backup automático ligado</label>
+            <button class="ghost" id="bkAgora">Fazer backup agora</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <div class="chart-head"><h3>Cópia de segurança manual</h3></div>
+          <p class="muted">Exporte um arquivo para guardar ou abrir em outro computador. O token da brapi não vai junto.</p>
+          <div class="btn-row">
+            <button id="btnExport">Exportar arquivo .json</button>
+            <label class="button">Importar arquivo .json<input type="file" id="fileImport" accept=".json,application/json" hidden></label>
+            <button id="btnCsv">Exportar resumo .csv</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><h3>Recomeçar</h3></div>
+          <p class="muted">Volta para os números da análise de outubro de 2026. Os seus dados atuais são substituídos.</p>
+          <div class="btn-row">
+            <button class="danger" id="btnReset">Restaurar dados da análise</button>
+            <button class="danger ghost" id="btnClear">Apagar tudo</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="chart-head"><h3>Fontes das referências embutidas</h3></div>
+        <ul class="sources">
+          <li><a href="https://www.numerando.com.br/cambio/euro/2026" target="_blank">Câmbio EUR/BRL 2026 (PTAX, Banco Central)</a></li>
+          <li><a href="https://www.santander.pt/salto/escaloes-irs" target="_blank">Escalões do IRS 2026</a> e <a href="https://www.pwc.pt/pt/pwcinforfisco/orcamentoestado/irs-e-seguranca-social.html" target="_blank">proposta para 2027</a></li>
+          <li><a href="https://www.santander.pt/salto/ias" target="_blank">IAS 2026</a>, <a href="https://www.santander.pt/salto/despesas-dedutiveis-irs" target="_blank">deduções à coleta</a> e <a href="https://crncontabilidade.pt/blog/irs-jovem-2026-condicoes-escaloes-e-como-pedir-regime-expandido/" target="_blank">IRS Jovem</a></li>
+          <li><a href="https://re-locant.com/pt/tools/rent" target="_blank">Aluguéis por cidade (base Idealista, out/2026)</a> e <a href="https://www.doutorfinancas.pt/wp-content/uploads/2026/09/observatorio-imobiliario-setembro-2026.pdf" target="_blank">€/m² por distrito (set/2026)</a></li>
+          <li><a href="https://clubedopassaporte.com/blog/noticias/custo-de-vida-em-portugal-em-2026-cidade-por-cidade/" target="_blank">Custo de vida por cidade 2026</a> e <a href="https://brasileiroemportugal.com/rendas-portugal-precos-cidade-2026" target="_blank">rendas por tipologia</a></li>
+          <li><a href="https://www.dnoticias.pt/2026/10/8/508265-governo-assume-salario-minimo-nos-970-euros-no-proximo-ano/" target="_blank">Salário mínimo de € 970 em 2027</a> e <a href="https://www.cidadaniaevisto.com.br/blog/?p=3770" target="_blank">vistos D7 e D8</a></li>
+          <li><a href="https://occ.pt/en/node/1945533" target="_blank">Aluguel do Brasil declarado em Portugal (OCC)</a></li>
+        </ul>
+        <p class="muted small">Referências para conversar com contador e advogado de imigração; não substituem a orientação deles.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="ia-fab" id="iaFab" aria-expanded="false" aria-controls="iaDrawer" title="Conversar com o Vasco">
+  <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg><span>Vasco</span><i class="ia-dot" id="iaDot" hidden></i>
+</button>
+<aside class="ia-drawer" id="iaDrawer" hidden aria-label="Assistente">
+  <header class="ia-head">
+    <div class="ia-avatar">V</div>
+    <div><strong>Vasco</strong><small>Assistente do seu plano</small></div>
+    <button class="ghost icon" id="iaFechar" title="Fechar" aria-label="Fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </header>
+  <div class="ia-setup" id="iaSetup" hidden>
+    <p><b>Conecte o Vasco à Groq</b></p>
+    <p class="muted small" id="iaSetupMsg">Cole sua chave da API da Groq. Ela fica criptografada pelo Windows, só neste computador, e nunca vai para os arquivos exportados.</p>
+    <input type="password" id="iaChave" placeholder="gsk_..." autocomplete="off" spellcheck="false">
+    <div class="btn-row"><button class="primary" id="iaSalvarChave">Salvar chave</button><a href="https://console.groq.com/keys" target="_blank">Criar chave na Groq</a></div>
+  </div>
+  <div class="ia-main" id="iaMain" hidden>
+    <div class="ia-log" id="iaLog"></div>
+    <div class="ia-sug" id="iaSug">
+      <button data-sug="Resuma como está o plano hoje e o maior risco.">Como está o plano?</button>
+      <button data-sug="Compare as premissas dos cenários com o euro, os juros e a inflação de hoje.">Comparar com dados reais</button>
+      <button data-sug="Os valores de aluguel e mercado da cidade escolhida estão de acordo com os preços atuais? Pesquise.">Conferir custo de vida</button>
+      <button data-sug="Qual visto faz mais sentido para nós e o que falta para cumprir os requisitos?">Qual visto?</button>
+      <button data-sug="Quanto muda a sobra mensal se o euro subir 10%?">E se o euro subir?</button>
+    </div>
+    <div class="ia-anexos" id="iaAnexos" hidden></div>
+    <form class="ia-form" id="iaForm">
+      <button type="button" class="ghost ia-ico" id="iaClip" title="Anexar documento (PDF, imagem, CSV)" aria-label="Anexar documento"><svg viewBox="0 0 24 24"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7L14 4.5a3.5 3.5 0 0 1 5 5L10.5 18a2 2 0 0 1-3-3L15 7.5"/></svg></button>
+      <input type="file" id="iaArquivo" hidden multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.csv,.txt,.md,.json,.ofx,image/*,application/pdf,text/*">
+      <textarea id="iaInput" rows="2" placeholder="Pergunte, cole uma vaga, anexe um documento ou fale pelo microfone"></textarea>
+      <button type="button" class="ghost ia-ico" id="iaMic" title="Falar (clique de novo para enviar)" aria-label="Falar"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><small></small></button>
+      <button class="primary" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+    </form>
+    <footer class="ia-foot">
+      <span class="muted small">Modelo: <span id="iaModelo"></span></span>
+      <span class="muted small" id="iaCota"></span>
+      <span class="ia-foot-btns"><button class="link" id="iaAtualizarModelo">trocar para o mais novo</button><button class="link" id="iaLimpar">limpar conversa</button><button class="link" id="iaRemover">remover chave</button></span>
+      <span class="muted small" id="iaCripto"></span>
+    </footer>
+  </div>
+</aside>
+
+<div id="report" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="confirmDlg">
+  <form method="dialog">
+    <p id="confirmMsg"></p>
+    <div class="btn-row end">
+      <button value="cancel">Cancelar</button>
+      <button value="ok" class="danger" id="confirmOk">Confirmar</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="vendor/chart.umd.js"></script>
+<script src="urls.js"></script>
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+<script src="views.js"></script>
+<script src="market.js"></script>
+<script src="vendor/pdf.js"></script>
+<script src="vendor/pdf.worker.js"></script>
+<script src="vistos.js"></script>
+<script src="ascendencia.js"></script>
+<script src="viagem.js"></script>
+<script src="vagas.js"></script>
+<script src="assistente.js"></script>
+<script src="vasco.js"></script>
+<script src="ine.js"></script>
+<script src="risco.js"></script>
+<script src="sistema.js"></script>
+</body>
+</html>

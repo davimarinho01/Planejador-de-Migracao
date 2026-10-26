@@ -1,0 +1,8 @@
+{
+  "name": "planejador-viseu",
+  "productName": "Planejador Viseu",
+  "version": "2.3.0",
+  "description": "Planejamento financeiro da mudança Brasil → Viseu: rendas, despesas, investimentos e cenários.",
+  "main": "main.js",
+  "author": "Davi Marinho"
+}
